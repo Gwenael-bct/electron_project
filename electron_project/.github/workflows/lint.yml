@@ -1,0 +1,27 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Récupérer le code du dépôt
+      - uses: actions/checkout@v3
+
+      # Installer Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # Installer les dépendances
+      - run: npm install
+
+      # Lancer le linter
+      - run: npm run lint
