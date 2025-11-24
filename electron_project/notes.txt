@@ -1,0 +1,6 @@
+consignes:
+    - Faire de la CI avec au minimum du Linter html lors d'un push
+    - projet avec au moins 2 types à enregistrer
+    - Readme.md de qualité:
+        - Comment lancer le projet
+        - Description du projet (MDD, contexte, description, use case, archi)
