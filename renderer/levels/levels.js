@@ -1,4 +1,4 @@
-const { loadGameData, savePlayer } = require("../api");
+const { loadGameData } = require("../api");
 
 function createLevelCard(level, player) {
   const isUnlocked = level.id <= player.level;
