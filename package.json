@@ -8,6 +8,7 @@
   "main": "main.js",
   "scripts": {
     "build:css": "tailwindcss -i ./renderer/input.css -o ./renderer/output.css --watch",
+    "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint:js": "eslint '**/*.js'",
     "lint:html": "htmlhint '**/*.html'",

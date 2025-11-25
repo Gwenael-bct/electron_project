@@ -81,6 +81,9 @@ Représente les informations du joueur sauvegardées en local.
 |----------------|-----------------|--------------------------------------------------|
 | `userName`     | `string`        | Nom du joueur                                    |
 | `level`        | `number`        | Niveau actuel du joueur                          |
+| `attack`       | `number`        | Attaque actuel du joueur                         |
+| `attackSpeed`  | `number`        | Vitesse d'attaque actuel du joueur               |
+| `life`         | `number`        | Vie actuel du joueur                             |
 | `gold`         | `number`        | Or disponible pour acheter des vaisseaux         |
 | `currentShipId`| `number`        | ID du vaisseau actuellement équipé               |
 | `unlockedShips`| `array<number>` | Liste des vaisseaux débloqués par le joueur      |
