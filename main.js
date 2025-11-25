@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const fs = require("fs");
 
@@ -19,13 +19,13 @@ function createWindow() {
  * Chemin du fichier de sauvegarde JSON.
  */
 function getSaveFilePath() {
-  const filePath = path.join(app.getPath("userData"), "playerData.json");
+  const filePath = path.join(__dirname, "playerData.json");
   console.log("Chemin du fichier de sauvegarde :", filePath);
   return filePath;
 }
 
 /**
- * Charge les données complètes depuis le JSON.
+ * Lecture des données complètes de jeu.
  */
 function loadGameData() {
   const filePath = getSaveFilePath();
@@ -44,7 +44,7 @@ function loadGameData() {
 }
 
 /**
- * Sauvegarde les données de jeu complètes dans le JSON.
+ * Écriture des données complètes de jeu.
  */
 function saveGameData(data) {
   const filePath = getSaveFilePath();
@@ -57,7 +57,7 @@ function saveGameData(data) {
 }
 
 /**
- * Supprime le fichier de sauvegarde (reset complet).
+ * Suppression des données (reset complet).
  */
 function resetGameData() {
   const filePath = getSaveFilePath();
@@ -71,33 +71,9 @@ function resetGameData() {
   }
 }
 
-ipcMain.handle("player:load", () => {
-  const data = loadGameData();
-  if (!data) return null;
-  return data.player ?? null;
-});
-
-ipcMain.handle("player:save", (event, player) => {
-  const existing = loadGameData() || {};
-
-  const dataToSave = {
-    // on garde levels / ships si déjà présents
-    levels: existing.levels || [],
-    ships: existing.ships || [],
-    player,
-  };
-
-  saveGameData(dataToSave);
-
-  return true;
-});
-
-ipcMain.handle("player:reset", () => {
-  resetGameData();
-  return true;
-});
-
-// initialisation d'un JSON par défaut (levels / ships)
+/**
+ * Initialise les données par défaut si le fichier est absent ou incomplet.
+ */
 function createDefaultGameDataIfMissing() {
   const defaultLevels = [
     { id: 1, asteroidCount: 10 },
@@ -122,11 +98,18 @@ function createDefaultGameDataIfMissing() {
       fireRate: 1.2,
       price: 300,
     },
+    {
+      id: 3,
+      name: "Eagle Pro",
+      spritePath: "assets/space_sheep_3.png",
+      attack: 4,
+      fireRate: 1.5,
+      price: 600,
+    },
   ];
 
   const existing = loadGameData();
 
-  // Aucun fichier => on crée tout
   if (!existing) {
     const data = {
       player: null,
@@ -137,7 +120,6 @@ function createDefaultGameDataIfMissing() {
     return;
   }
 
-  // Fichier déjà là mais incomplet => on complète
   let changed = false;
 
   if (!existing.levels || !Array.isArray(existing.levels)) {
@@ -155,7 +137,46 @@ function createDefaultGameDataIfMissing() {
   }
 }
 
+/* ---------- IPC : API appelée depuis le renderer ---------- */
 
+ipcMain.handle("player:load", () => {
+  const data = loadGameData();
+  if (!data) return null;
+  return data.player ?? null;
+});
+
+ipcMain.handle("player:save", (event, player) => {
+  const existing = loadGameData() || {};
+
+  const dataToSave = {
+    levels: existing.levels || [],
+    ships: existing.ships || [],
+    player,
+  };
+
+  saveGameData(dataToSave);
+  return true;
+});
+
+ipcMain.handle("player:reset", () => {
+  resetGameData();
+  // On recrée un fichier par défaut vide de player mais avec levels/ships
+  createDefaultGameDataIfMissing();
+  return true;
+});
+
+// Nouvelle API pour récupérer toutes les données de jeu (player + levels + ships)
+ipcMain.handle("game:load", () => {
+  const data = loadGameData();
+  if (!data) {
+    // si jamais rien, on force la création
+    createDefaultGameDataIfMissing();
+    return loadGameData();
+  }
+  return data;
+});
+
+/* ---------- Lancement de l'application ---------- */
 app.whenReady().then(() => {
   createDefaultGameDataIfMissing();
   createWindow();

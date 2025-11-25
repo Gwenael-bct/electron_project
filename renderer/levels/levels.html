@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Space Shooter – Niveaux</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../output.css" />
+  </head>
+  <body class="m-0">
+    <div class="relative min-h-screen">
+      <!-- Background -->
+      <img
+        src="../../assets/background.jpg"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover -z-10"
+      />
+      <div class="absolute inset-0 bg-black/50 -z-0"></div>
+
+      <!-- Contenu -->
+      <div class="absolute inset-0 flex flex-col items-center pt-10 gap-6">
+        <!-- Header / Infos joueur -->
+        <div class="flex flex-col items-center gap-2">
+          <h1 class="text-white text-3xl font-bold drop-shadow">
+            Sélection du niveau
+          </h1>
+          <div
+            id="player-summary"
+            class="text-xl text-white/90 bg-black/50 rounded px-4 py-2 border border-white/20"
+          >
+            <!-- rempli en JS -->
+          </div>
+          <button
+            id="back-to-home"
+            class="mt-1 text-medium text-gray-300 underline"
+          >
+            Retour à l'écran d'accueil
+          </button>
+        </div>
+
+        <!-- Liste des niveaux -->
+        <div
+          id="levels-container"
+          class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 w-full max-w-4xl text-center"
+        >
+          <!-- cartes de niveaux générées en JS -->
+        </div>
+      </div>
+    </div>
+
+    <script src="./levels.js"></script>
+  </body>
+</html>

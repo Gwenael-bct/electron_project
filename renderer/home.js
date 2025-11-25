@@ -1,39 +1,4 @@
-const { ipcRenderer } = require("electron");
-
-/**
- * Chargement du joueur via IPC (JSON côté main process).
- */
-async function loadPlayer() {
-  try {
-    const player = await ipcRenderer.invoke("player:load");
-    return player; // soit un objet, soit null
-  } catch (err) {
-    console.error("Erreur IPC player:load :", err);
-    return null;
-  }
-}
-
-/**
- * Sauvegarde du joueur via IPC.
- */
-async function savePlayer(player) {
-  try {
-    await ipcRenderer.invoke("player:save", player);
-  } catch (err) {
-    console.error("Erreur IPC player:save :", err);
-  }
-}
-
-/**
- * Reset des données joueur via IPC.
- */
-async function resetPlayer() {
-  try {
-    await ipcRenderer.invoke("player:reset");
-  } catch (err) {
-    console.error("Erreur IPC player:reset :", err);
-  }
-}
+const { loadPlayer, savePlayer, resetPlayer } = require("./api");
 
 document.addEventListener("DOMContentLoaded", async () => {
   const newPlayerSection = document.getElementById("new-player-section");
@@ -47,28 +12,26 @@ document.addEventListener("DOMContentLoaded", async () => {
   const welcomeText = document.getElementById("welcome-text");
   const resetButton = document.getElementById("reset-player");
 
-  // On regarde s'il existe déjà un joueur dans le JSON
+  // On regarde s'il existe déjà un joueur
   const existingPlayer = await loadPlayer();
 
   if (existingPlayer) {
-    // On affiche la section "joueur existant"
     newPlayerSection.classList.add("hidden");
     existingPlayerSection.classList.remove("hidden");
 
-    welcomeText.textContent = `Bienvenue ${existingPlayer.userName} !`;
+    welcomeText.textContent = `Bienvenue de nouveau, ${existingPlayer.userName} !`;
   } else {
-    // On affiche la section "nouveau joueur"
     existingPlayerSection.classList.add("hidden");
     newPlayerSection.classList.remove("hidden");
   }
 
-  // Gestion de l'input pseudo : tant que vide → bouton désactivé
+  // Input pseudo => active/désactive le bouton
   usernameInput.addEventListener("input", () => {
     const value = usernameInput.value.trim();
     playButtonNew.disabled = value.length === 0;
   });
 
-  // Création d'un nouveau joueur quand on clique sur "Jouer"
+  // Création d'un nouveau joueur
   playButtonNew.addEventListener("click", async () => {
     const userName = usernameInput.value.trim();
     if (!userName) return;
@@ -86,26 +49,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     await savePlayer(newPlayer);
 
-    alert(
-      `Bienvenue ${userName} ! (prochainement : écran de sélection des niveaux)`
-    );
-
-    // On recharge juste la page pour repasser dans la branche "joueur existant"
-    window.location.reload();
+    // On enchaîne vers l'écran des niveaux
+    window.location.href = "levels.html";
   });
 
-  // Bouton "Continuer" pour un joueur existant
+  // Continuer avec le joueur existant
   playButtonExisting.addEventListener("click", async () => {
     const player = await loadPlayer();
-    if (!player) return;
+    if (!player) {
+      // sécurité : si pas de joueur, on retourne à l'écran d'accueil "nouveau joueur"
+      window.location.href = "index.html";
+      return;
+    }
 
-    alert(
-      `On continue avec ${player.userName} (Niveau ${player.level}) – prochainement : écran de sélection des niveaux.`
-    );
-    // TODO: ici on ira vers le menu des niveaux
+    window.location.href = "levels/levels.html";
   });
 
-  // Permet de "changer de joueur"
+  // Changer de joueur
   resetButton.addEventListener("click", async () => {
     await resetPlayer();
     window.location.reload();
