@@ -35,11 +35,9 @@ function createLevelCard(level, player) {
   button.disabled = !isUnlocked;
 
   if (isUnlocked) {
-    button.addEventListener("click", async () => {
-      // TODO: Lancer la vraie partie
-      alert(
-        `Lancement du niveau ${level.id} (à implémenter – on ira vers l'écran de jeu).`
-      );
+    button.addEventListener("click", () => {
+      // On lance le niveau
+      window.location.href = `../game/game.html?level=${level.id}`;
     });
   }
 

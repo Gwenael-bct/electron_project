@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Space Shooter – Partie</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="../output.css" />
+  </head>
+  <body class="m-0">
+    <div class="relative min-h-screen">
+      <!-- Background -->
+      <img
+        src="../../assets/background.jpg"
+        alt=""
+        class="absolute inset-0 w-full h-full object-cover -z-10"
+      />
+      <div class="absolute inset-0 bg-black/60 -z-0"></div>
+
+      <!-- HUD + Canvas -->
+      <div class="absolute inset-0 flex flex-col items-center pt-4 gap-4">
+        <!-- HUD -->
+        <div
+          id="hud"
+          class="flex flex-col sm:flex-row gap-2 sm:gap-6 text-white text-sm bg-black/50 border border-white/20 rounded px-4 py-2"
+        >
+          <span id="hud-player"></span>
+          <span id="hud-level"></span>
+          <span id="hud-life"></span>
+          <span id="hud-asteroids"></span>
+        </div>
+
+        <!-- Canvas -->
+        <div
+          class="flex-1 flex items-center justify-center w-full px-4 pb-6"
+        >
+          <canvas
+            id="game-canvas"
+            class="border border-white/30 bg-black/80 rounded-lg w-full h-full"
+          ></canvas>
+        </div>
+      </div>
+
+      <!-- Overlay fin de partie -->
+      <div
+        id="end-screen"
+        class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/80 text-white gap-4"
+      >
+        <h2 id="end-title" class="text-3xl font-bold"></h2>
+        <p id="end-details" class="text-sm text-gray-200"></p>
+        <div class="flex gap-3 mt-2">
+          <button
+            id="end-back-levels"
+            class="px-4 py-2 rounded bg-indigo-500 text-white text-sm font-bold hover:bg-indigo-600"
+          >
+            Retour aux niveaux
+          </button>
+          <button
+            id="end-retry"
+            class="px-4 py-2 rounded bg-gray-500 text-white text-sm font-bold hover:bg-gray-600"
+          >
+            Rejouer
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./game.js"></script>
+  </body>
+</html>

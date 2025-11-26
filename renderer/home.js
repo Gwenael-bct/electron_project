@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await savePlayer(newPlayer);
 
     // On enchaîne vers l'écran des niveaux
-    window.location.href = "levels.html";
+    window.location.href = "levels/levels.html";
   });
 
   // Continuer avec le joueur existant
