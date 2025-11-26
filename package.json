@@ -10,8 +10,8 @@
     "build:css": "tailwindcss -i ./renderer/input.css -o ./renderer/output.css --watch",
     "start": "electron .",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint:js": "eslint '**/*.js'",
-    "lint:html": "htmlhint '**/*.html'",
+    "lint:js": "eslint \"**/*.js\"",
+    "lint:html": "htmlhint \"**/*.html\"",
     "lint": "npm run lint:js && npm run lint:html"
   },
   "dependencies": {

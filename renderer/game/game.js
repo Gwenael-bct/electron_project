@@ -84,9 +84,8 @@ class Game {
     this.hudPlayerEl.textContent = `${this.player.userName}`;
     this.hudLevelEl.textContent = `Niveau ${this.level.id}`;
     this.hudLifeEl.textContent = `PV: ${this.player.life}`;
-    this.hudAsteroidsEl.textContent = `Astéroïdes restants: ${
-      this.totalAsteroidsToSpawn - this.destroyedAsteroidsCount()
-    }`;
+    this.hudAsteroidsEl.textContent = `Astéroïdes restants: ${this.totalAsteroidsToSpawn - this.destroyedAsteroidsCount()
+      }`;
   }
 
   destroyedAsteroidsCount() {
@@ -303,7 +302,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const endRetry = document.getElementById("end-retry");
 
   const rect = canvas.getBoundingClientRect();
-  const scale = 0.8; // résolution interne un peu réduite pour éviter le lag
+  const scale = 0.8;
   canvas.width = rect.width * scale;
   canvas.height = rect.height * scale;
 
@@ -311,7 +310,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const levelId = parseLevelIdFromUrl();
   if (!levelId) {
-    window.location.href = "../level/levels.html";
+    window.location.href = "../levels/levels.html";
     return;
   }
 
@@ -325,11 +324,23 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const level = gameData.levels.find((l) => l.id === levelId);
   if (!level) {
-    window.location.href = "../level/levels.html";
+    window.location.href = "../levels/levels.html";
     return;
   }
 
   const sprites = await loadSprites(gameData);
+
+  const currentShip = gameData.ships.find(
+    (s) => s.id === gameData.player.currentShipId
+  );
+
+  // Calcul des stats effectives (Base + Vaisseau)
+  const effectivePlayerStats = {
+    ...gameData.player,
+    attack: gameData.player.attack + (currentShip ? currentShip.attack : 0),
+    attackSpeed:
+      gameData.player.attackSpeed + (currentShip ? currentShip.fireRate : 0),
+  };
 
   const onEnd = async (victory, player, currentLevel) => {
     if (victory) {
@@ -339,9 +350,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const updatedPlayer = {
         userName: player.userName,
         level: newLevelValue,
-        attack: player.attack,
-        attackSpeed: player.attackSpeed,
-        life: baseLifeFromJson, // PV max conservés
+        attack: gameData.player.attack,
+        attackSpeed: gameData.player.attackSpeed,
+        life: baseLifeFromJson,
         gold: player.gold + rewardGold,
         currentShipId: player.currentShipId,
         unlockedShips: player.unlockedShips,
@@ -368,7 +379,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const game = new Game(
     ctx,
     canvas,
-    gameData.player,
+    effectivePlayerStats,
     level,
     sprites,
     onEnd
@@ -376,7 +387,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   game.start();
 
   endBackLevels.addEventListener("click", () => {
-    window.location.href = "../level/levels.html";
+    window.location.href = "../levels/levels.html";
   });
 
   endRetry.addEventListener("click", () => {

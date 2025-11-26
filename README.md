@@ -126,7 +126,7 @@ Représente les informations du joueur sauvegardées en local.
 | `fireRate`     |  `number`       | Vitesse d'attaque du vaisseau                    |
 | `price`        |  `number`       | Prix d'achat                                     |
 
-#### Exemple JSON `Level`
+#### Exemple JSON `Ship`
 
 ```json
 {

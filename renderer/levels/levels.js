@@ -69,11 +69,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const levelsContainer = document.getElementById("levels-container");
   const backButton = document.getElementById("back-to-home");
 
-  playerSummary.textContent = `${player.userName} – Niveau joueur : ${
-    player.level
-  } | Attaque : ${player.attack} | Vitesse d'attaque : ${
-    player.attackSpeed
-  } | Vie : ${player.life} | Gold : ${player.gold}`;
+  playerSummary.textContent = `${player.userName} – Niveau joueur : ${player.level
+    } | Attaque : ${player.attack} | Vitesse d'attaque : ${player.attackSpeed
+    } | Vie : ${player.life} | Gold : ${player.gold}`;
 
   levelsContainer.innerHTML = "";
 
@@ -85,4 +83,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   backButton.addEventListener("click", () => {
     window.location.href = "../index.html";
   });
+
+  const shopButton = document.getElementById("go-to-shop");
+  if (shopButton) {
+    shopButton.addEventListener("click", () => {
+      window.location.href = "../store.html";
+    });
+  }
 });
