@@ -57,7 +57,7 @@ La progression du joueur est enregistrée dans une table players contenant :
 1. Le joueur ouvre la boutique.
 2. Il consulte les vaisseaux disponibles.
 3. Il sélectionne un modèle.
-4. Le système vérifie les golds et le niveau du joueur.
+4. Le système vérifie les golds.
 5. Le vaisseau est débloqué et ajouté à l'inventaire.
 
 ---
@@ -102,17 +102,27 @@ Représente les informations du joueur sauvegardées en local.
 
 ### 2. Entité : Level
 
-| Attribut       | Type            | Description                                      |
-|----------------|-----------------|--------------------------------------------------|
-| `id`           |  `number`       | Identifiant du niveau                            |
-| `asteroidCount`|  `number`       | Nombre d’astéroïdes dans ce niveau               |
+| Attribut          | Type            | Description                                      |
+|-------------------|-----------------|--------------------------------------------------|
+| `id`              | `number`        | Identifiant du niveau                            |
+| `duration`        | `number`        | Nombre d’astéroïdes dans ce niveau               |
+| `spawnMinInterval`| `number`        | Nombre d’astéroïdes dans ce niveau               |
+| `spawnMaxInterval`| `number`        | Nombre d’astéroïdes dans ce niveau               |
+| `minAsteroids`    | `number`        | Nombre d’astéroïdes dans ce niveau               |
+| `maxAsteroids`    | `number`        | Nombre d’astéroïdes dans ce niveau               |
+| `goldReward`      | `number`        | Nombre d’astéroïdes dans ce niveau               |
 
 #### Exemple JSON `Level`
 
 ```json
 {
-  "id": 1,
-  "asteroidCount": 10
+  "id": 3,
+  "duration": 60,
+  "spawnMinInterval": 0.3,
+  "spawnMaxInterval": 1,
+  "minAsteroids": 6,
+  "maxAsteroids": 9,
+  "goldReward": 500,
 }
 ```
 ### 3. Entité : Ship
@@ -168,8 +178,17 @@ electron_project/
 │   ├── input.css             # Fichier source Tailwind
 │   ├── output.css            # CSS généré
 │   ├── game.js               # Logique du gameplay
-│   ├── store.js              # Achat vaisseaux
-│   └── components/           # Composants JS/CSS
-│
+│   ├── store.js              # Gestion des données
+│   ├── levels/               # Niveaux
+│     ├── levels.html
+│     ├── levels.js
+│   ├── game/                 # Gameplay
+│     ├── game.html
+│     ├── game.js
+│     ├── player.js           # Vaisseau joueur
+│     ├── asteroid.js         # Astéroïdes
+│     ├── bullet.js           # Tirs
+│     ├── sprites.js          # Sprites
+│   
 └── notes.txt                 # Notes perso
 ```

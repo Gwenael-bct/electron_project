@@ -13,7 +13,7 @@ function createLevelCard(level, player) {
 
   const details = document.createElement("p");
   details.className = "text-xs text-gray-300";
-  details.textContent = `Astéroïdes : ${level.asteroidCount}`;
+  details.textContent = `Durée : ${level.duration} sec`;
 
   const status = document.createElement("span");
   status.className = "text-xs font-semibold";
@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  const { player, levels } = gameData;
+  const { player, levels, ships } = gameData;
 
   // Sécurité : si aucun joueur, on retourne à l'écran d'accueil
   if (!player) {
@@ -65,13 +65,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  const currentShip = ships.find((s) => s.id === player.currentShipId);
+  const effectiveAttack = player.attack + (currentShip ? currentShip.attack : 0);
+  const effectiveSpeed =
+    player.attackSpeed + (currentShip ? currentShip.fireRate : 0);
+
   const playerSummary = document.getElementById("player-summary");
   const levelsContainer = document.getElementById("levels-container");
   const backButton = document.getElementById("back-to-home");
 
   playerSummary.textContent = `${player.userName} – Niveau joueur : ${player.level
-    } | Attaque : ${player.attack} | Vitesse d'attaque : ${player.attackSpeed
-    } | Vie : ${player.life} | Gold : ${player.gold}`;
+    } | Attaque : ${effectiveAttack} | Vitesse d'attaque : ${effectiveSpeed} | Vie : ${player.life
+    } | Gold : ${player.gold}`;
 
   levelsContainer.innerHTML = "";
 

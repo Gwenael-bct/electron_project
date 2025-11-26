@@ -25,8 +25,10 @@ class Game {
 
     this.bullets = [];
     this.asteroids = [];
-    this.totalAsteroidsToSpawn = levelData.asteroidCount;
-    this.spawnedAsteroids = 0;
+
+    // Nouveau système : temps
+    this.timeElapsed = 0;
+    this.duration = levelData.duration;
 
     this.lastTime = 0;
     this.isRunning = true;
@@ -35,8 +37,11 @@ class Game {
     this.keys = { left: false, right: false };
     this.shootCooldown = 0;
 
-    this.minSpawnInterval = 0.4;
-    this.maxSpawnInterval = 1.4;
+    this.minSpawnInterval = levelData.spawnMinInterval;
+    this.maxSpawnInterval = levelData.spawnMaxInterval;
+    this.minAsteroids = levelData.minAsteroids;
+    this.maxAsteroids = levelData.maxAsteroids;
+
     this.spawnTimer = 0;
     this.nextSpawnIn = this.randomSpawnInterval();
 
@@ -46,6 +51,7 @@ class Game {
     this.hudLifeEl = document.getElementById("hud-life");
     this.hudAsteroidsEl = document.getElementById("hud-asteroids");
     this.hudDirty = true;
+    this.lastHudTime = -1;
 
     this.updateHud();
     this.initControls();
@@ -84,26 +90,27 @@ class Game {
     this.hudPlayerEl.textContent = `${this.player.userName}`;
     this.hudLevelEl.textContent = `Niveau ${this.level.id}`;
     this.hudLifeEl.textContent = `PV: ${this.player.life}`;
-    this.hudAsteroidsEl.textContent = `Astéroïdes restants: ${this.totalAsteroidsToSpawn - this.destroyedAsteroidsCount()
-      }`;
+
+    const remainingTime = Math.max(0, Math.ceil(this.duration - this.timeElapsed));
+    this.hudAsteroidsEl.textContent = `Temps restant: ${remainingTime}s`;
   }
 
-  destroyedAsteroidsCount() {
-    // total - (ceux en jeu + ceux qui restent à spawn)
-    return (
-      this.totalAsteroidsToSpawn -
-      (this.asteroids.length +
-        (this.totalAsteroidsToSpawn - this.spawnedAsteroids))
+  spawnAsteroidBatch() {
+    // Nombre aléatoire d'astéroïdes à spawn
+    const count = Math.floor(
+      this.minAsteroids + Math.random() * (this.maxAsteroids - this.minAsteroids + 1)
     );
+
+    for (let i = 0; i < count; i++) {
+      this.spawnSingleAsteroid();
+    }
   }
 
-  spawnAsteroid() {
-    if (this.spawnedAsteroids >= this.totalAsteroidsToSpawn) return;
-
+  spawnSingleAsteroid() {
     const margin = 20;
     const x =
       margin + Math.random() * (this.canvas.width - margin * 2);
-    const y = -20;
+    const y = -20 - Math.random() * 50; // léger décalage vertical
 
     const asteroid = new Asteroid(
       x,
@@ -112,7 +119,6 @@ class Game {
       this.sprites.asteroidSprite
     );
     this.asteroids.push(asteroid);
-    this.spawnedAsteroids += 1;
     this.hudDirty = true;
   }
 
@@ -216,11 +222,8 @@ class Game {
 
     // spawn d'astéroïdes
     this.spawnTimer += dt;
-    if (
-      this.spawnTimer >= this.nextSpawnIn &&
-      this.spawnedAsteroids < this.totalAsteroidsToSpawn
-    ) {
-      this.spawnAsteroid();
+    if (this.spawnTimer >= this.nextSpawnIn) {
+      this.spawnAsteroidBatch();
       this.spawnTimer = 0;
       this.nextSpawnIn = this.randomSpawnInterval();
     }
@@ -242,16 +245,15 @@ class Game {
     this.handleCollisions();
     if (this.isGameOver) return;
 
-    // condition de victoire : tout a été spawn + plus aucun en jeu
-    if (
-      this.spawnedAsteroids >= this.totalAsteroidsToSpawn &&
-      this.asteroids.length === 0
-    ) {
+    // condition de victoire : temps écoulé
+    this.timeElapsed += dt;
+    if (this.timeElapsed >= this.level.duration) {
       this.endGame(true);
     }
 
     // HUD lazy
-    if (this.hudDirty) {
+    if (this.hudDirty || Math.floor(this.timeElapsed) !== this.lastHudTime) {
+      this.lastHudTime = Math.floor(this.timeElapsed);
       this.updateHud();
       this.hudDirty = false;
     }
@@ -340,19 +342,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     attack: gameData.player.attack + (currentShip ? currentShip.attack : 0),
     attackSpeed:
       gameData.player.attackSpeed + (currentShip ? currentShip.fireRate : 0),
+    life: baseLifeFromJson,
   };
 
   const onEnd = async (victory, player, currentLevel) => {
     if (victory) {
       const newLevelValue = Math.max(player.level, currentLevel.id + 1);
-      const rewardGold = currentLevel.id * 10;
+      const rewardGold = currentLevel.goldReward || (currentLevel.id * 100);
 
       const updatedPlayer = {
         userName: player.userName,
         level: newLevelValue,
+        // On garde les stats de base pour la sauvegarde, pas les stats boostées
         attack: gameData.player.attack,
         attackSpeed: gameData.player.attackSpeed,
-        life: baseLifeFromJson,
+        life: baseLifeFromJson, // PV max conservés
         gold: player.gold + rewardGold,
         currentShipId: player.currentShipId,
         unlockedShips: player.unlockedShips,
@@ -361,7 +365,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await savePlayer(updatedPlayer);
 
       endTitle.textContent = "Victoire !";
-      endDetails.textContent = `Tu as terminé le niveau ${currentLevel.id} et gagné ${rewardGold} gold.`;
+      endDetails.textContent = `Tu as survécu au niveau ${currentLevel.id} et gagné ${rewardGold} gold.`;
     } else {
       endTitle.textContent = "Défaite...";
       endDetails.textContent = `Tu as été détruit au niveau ${currentLevel.id}.`;

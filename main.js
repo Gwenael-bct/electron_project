@@ -75,9 +75,33 @@ function resetGameData() {
  */
 function createDefaultGameDataIfMissing() {
   const defaultLevels = [
-    { id: 1, asteroidCount: 10 },
-    { id: 2, asteroidCount: 20 },
-    { id: 3, asteroidCount: 30 },
+    {
+      id: 1,
+      duration: 30, // secondes
+      spawnMinInterval: 0.8,
+      spawnMaxInterval: 1.5,
+      minAsteroids: 3,
+      maxAsteroids: 4,
+      goldReward: 100,
+    },
+    {
+      id: 2,
+      duration: 45,
+      spawnMinInterval: 0.6,
+      spawnMaxInterval: 1.2,
+      minAsteroids: 4,
+      maxAsteroids: 6,
+      goldReward: 250,
+    },
+    {
+      id: 3,
+      duration: 60,
+      spawnMinInterval: 0.3,
+      spawnMaxInterval: 1,
+      minAsteroids: 6,
+      maxAsteroids: 9,
+      goldReward: 500,
+    },
   ];
 
   const defaultShips = [
@@ -121,10 +145,9 @@ function createDefaultGameDataIfMissing() {
 
   let changed = false;
 
-  if (!existing.levels || !Array.isArray(existing.levels)) {
-    existing.levels = defaultLevels;
-    changed = true;
-  }
+  // On force la mise à jour des niveaux pour appliquer la nouvelle structure (temps vs astéroïdes)
+  existing.levels = defaultLevels;
+  changed = true;
 
   if (!existing.ships || !Array.isArray(existing.ships)) {
     existing.ships = defaultShips;

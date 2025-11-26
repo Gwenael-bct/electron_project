@@ -7,10 +7,10 @@ class Asteroid {
     this.radius = 16 + Math.random() * 24;
 
     // vitesse globale
-    const baseSpeed = 80 + Math.random() * 80;
+    const baseSpeed = 100 + Math.random() * 100;
 
     // angle autour de "vers le bas" (PI/2), ±45°
-    const angleSpread = Math.PI / 4;
+    const angleSpread = Math.PI / 10;
     const angle = Math.PI / 2 + (Math.random() - 0.5) * 2 * angleSpread;
 
     this.vx = Math.cos(angle) * baseSpeed;
