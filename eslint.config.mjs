@@ -3,6 +3,30 @@ import globals from "globals";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs}"], plugins: { js }, extends: ["js/recommended"], languageOptions: { globals: globals.browser } },
-  { files: ["**/*.js"], languageOptions: { sourceType: "commonjs" } },
+ {
+    files: ["main.js"],
+    ...js.configs.recommended,
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: "commonjs",
+      globals: {
+        ...globals.node,
+        __dirname: "readonly",
+      },
+    },
+  },
+
+  // JS du renderer : côté navigateur, avec require dispo
+  {
+    files: ["renderer/**/*.js"],
+    ...js.configs.recommended,
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: "commonjs",
+      globals: {
+        ...globals.browser,
+        require: "readonly",
+      },
+    },
+  },
 ]);
