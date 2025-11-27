@@ -7,68 +7,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="stylesheet" href="./output.css" />
   </head>
-  <body class="m-0">
-    <div class="relative min-h-screen">
-      <!-- Image de fond -->
+  <body class="m-0 font-sans text-white">
+    <!-- Background -->
+    <div class="fixed inset-0 -z-20">
       <img
         src="../assets/background.jpg"
-        alt=""
-        class="absolute inset-0 w-full h-full object-cover -z-10"
+        alt="Fond spatial"
+        class="w-full h-full object-cover"
       />
+    </div>
+    <div
+      class="fixed inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 -z-10 backdrop-blur-[2px]"
+    ></div>
 
-      <!-- Overlay sombre pour lisibilité -->
-      <div class="absolute inset-0 bg-black/40 -z-0"></div>
-
-      <!-- Contenu centré -->
-      <div class="absolute inset-0 flex flex-col items-center justify-center gap-6">
-        <h1 class="text-white text-4xl font-bold drop-shadow-lg">
+    <div
+      class="relative min-h-screen flex flex-col items-center justify-center px-4 py-12"
+    >
+      <header
+        class="w-full max-w-3xl text-center mb-10 bg-black/40 border border-white/10 rounded-2xl p-8 backdrop-blur-md shadow-2xl"
+      >
+        <p class="text-xs tracking-[0.4em] uppercase text-blue-300">
           Space Shooter
-        </h1>
-
-        <!-- Section "nouveau joueur" (affichée si aucun joueur enregistré) -->
-        <div
-          id="new-player-section"
-          class="bg-black/60 border border-white/20 rounded-lg px-6 py-4 flex flex-col gap-3 w-80"
+        </p>
+        <h1
+          class="mt-3 text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(147,197,253,0.45)]"
         >
-          <p class="text-white text-center text-sm">
-            Bienvenue ! Choisis un pseudo pour commencer :
+          Prépare ton escadron
+        </h1>
+        <p class="mt-4 text-gray-300 text-sm md:text-base max-w-2xl mx-auto">
+          Débloque des vaisseaux légendaires, personnalise ton arsenal et pars
+          défendre la galaxie.
+        </p>
+      </header>
+
+      <div
+        class="w-full max-w-3xl grid grid-cols-1 gap-6 items-start"
+      >
+        <!-- Nouveau joueur -->
+        <section
+          id="new-player-section"
+          class="bg-black/50 border border-white/10 rounded-2xl p-6 flex flex-col gap-5 backdrop-blur-md shadow-[0_20px_50px_rgba(15,23,42,0.65)]"
+        >
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-blue-400">
+              Recrue
+            </p>
+            <h2 class="text-2xl font-semibold mt-1">Nouvelle mission</h2>
+          </div>
+          <p class="text-gray-300 text-sm">
+            Choisis ton indicatif et rejoins la flotte intergalactique.
           </p>
           <input
             id="username-input"
             type="text"
             placeholder="Ton pseudo"
-            class="px-3 py-2 rounded bg-black/70 border border-white/30 text-white text-sm focus:outline-none focus:ring focus:ring-indigo-400"
+            class="px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/60"
           />
           <button
             id="play-button-new"
-            class="mt-2 px-4 py-2 rounded bg-indigo-500 text-white font-bold text-sm disabled:bg-gray-500 disabled:cursor-not-allowed"
+            class="mt-2 px-4 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold text-sm tracking-wide hover:shadow-[0_10px_25px_rgba(59,130,246,0.4)] transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             disabled
           >
-            Jouer
+            Lancer la campagne
           </button>
-        </div>
+        </section>
 
-        <!-- Section "joueur existant" (affichée si un joueur est trouvé en local) -->
-        <div
+        <!-- Joueur existant -->
+        <section
           id="existing-player-section"
-          class="hidden bg-black/60 border border-white/20 rounded-lg px-6 py-4 flex flex-col gap-3 w-80"
+          class="hidden bg-black/50 border border-white/10 rounded-2xl p-6 flex flex-col gap-5 backdrop-blur-md shadow-[0_20px_50px_rgba(15,23,42,0.65)]"
         >
-          <p id="welcome-text" class="text-white text-sm text-center">
+          <div>
+            <p class="text-xs uppercase tracking-[0.3em] text-purple-400">
+              Pilote confirmé
+            </p>
+            <h2 class="text-2xl font-semibold mt-1">Reprendre le combat</h2>
+          </div>
+          <p id="welcome-text" class="text-sm text-gray-300 text-left">
             <!-- rempli en JS -->
           </p>
           <button
             id="play-button-existing"
-            class="mt-2 px-4 py-2 rounded bg-green-500 text-white font-bold text-sm"
+            class="px-4 py-3 rounded-xl bg-gradient-to-r from-green-500 to-emerald-500 text-white font-bold text-sm tracking-wide hover:shadow-[0_10px_25px_rgba(52,211,153,0.35)] transition-all"
           >
-            Continuer
+            Continuer la mission
           </button>
           <button
             id="reset-player"
-            class="mt-1 px-4 py-1 rounded border border-red-400 text-red-400 text-xs"
+            class="px-4 py-2 rounded-xl border border-red-400/60 text-red-300 text-xs font-semibold tracking-wide hover:bg-red-500/10 transition"
           >
-            Changer de joueur
+            Changer de pilote
           </button>
-        </div>
+        </section>
       </div>
     </div>
 

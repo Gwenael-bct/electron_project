@@ -9,38 +9,56 @@
   <link rel="stylesheet" href="../output.css" />
 </head>
 
-<body class="m-0">
-  <div class="relative min-h-screen">
-    <!-- Background -->
-    <img src="../../assets/background.jpg" alt="" class="absolute inset-0 w-full h-full object-cover -z-10" />
-    <div class="absolute inset-0 bg-black/50 -z-0"></div>
+<body class="m-0 font-sans text-white">
+  <!-- Background -->
+  <div class="fixed inset-0 -z-20">
+    <img src="../../assets/background.jpg" alt="Fond spatial" class="w-full h-full object-cover" />
+  </div>
+  <div class="fixed inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/80 -z-10 backdrop-blur-[2px]"></div>
 
-    <!-- Contenu -->
-    <div class="absolute inset-0 flex flex-col items-center pt-10 gap-6">
-      <!-- Header / Infos joueur -->
-      <div class="flex flex-col items-center gap-2">
-        <h1 class="text-white text-3xl font-bold drop-shadow">
-          Sélection du niveau
+  <div class="relative min-h-screen flex flex-col items-center py-10 px-4 gap-8">
+    <!-- Header / Infos joueur -->
+    <header
+      class="w-full max-w-5xl bg-black/40 border border-white/10 rounded-2xl p-8 text-center md:text-left flex flex-col md:flex-row items-center md:items-start justify-between gap-6 backdrop-blur-md shadow-2xl">
+      <div>
+        <p class="text-xs uppercase tracking-[0.4em] text-blue-300">Campagne</p>
+        <h1 class="mt-3 text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-sky-200">
+          Sélection des niveaux
         </h1>
-        <div id="player-summary" class="text-xl text-white/90 bg-black/50 rounded px-4 py-2 border border-white/20">
+        <p class="mt-3 text-gray-300 text-sm max-w-2xl">
+          Équipe ton vaisseau et progresse à travers des secteurs toujours plus dangereux.
+        </p>
+      </div>
+      <div class="flex flex-col items-center md:items-end gap-3 w-full md:w-auto">
+        <div id="player-summary"
+          class="w-full md:w-auto text-base md:text-lg font-mono text-yellow-300 bg-black/60 rounded-xl px-5 py-3 border border-yellow-500/30 shadow-[0_0_20px_rgba(234,179,8,0.18)]">
           <!-- rempli en JS -->
         </div>
-        <button id="back-to-home"
-          class="mt-1 rounded bg-blue-500 text-white font-bold text-sm px-4 py-2 hover:bg-blue-600">
-          Retour à l'écran d'accueil
-        </button>
-        <button id="go-to-shop"
-          class="mt-2 rounded bg-blue-500 text-white font-bold text-sm px-4 py-2 hover:bg-blue-600 hover:shadow-lg hover:opacity-80">
-          Boutique
-        </button>
+        <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <button id="back-to-home"
+            class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-white/10 border border-white/10 text-gray-200 font-semibold text-sm tracking-wide hover:bg-white/20 hover:scale-[1.02] transition">
+            Accueil
+          </button>
+          <button id="go-to-shop"
+            class="flex-1 sm:flex-none px-5 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold text-sm tracking-wide shadow-[0_10px_25px_rgba(168,85,247,0.3)] hover:translate-y-[-2px] transition">
+            Boutique
+          </button>
+        </div>
       </div>
+    </header>
 
-      <!-- Liste des niveaux -->
+    <!-- Liste des niveaux -->
+    <section class="w-full max-w-5xl">
+      <div class="flex items-center gap-4 mb-6">
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+        <h2 class="text-2xl font-semibold text-blue-200 uppercase tracking-widest">Sectors</h2>
+        <div class="h-px flex-1 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent"></div>
+      </div>
       <div id="levels-container"
-        class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 px-4 w-full max-w-4xl text-center">
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full text-center">
         <!-- cartes de niveaux générées en JS -->
       </div>
-    </div>
+    </section>
   </div>
 
   <script src="./levels.js"></script>
