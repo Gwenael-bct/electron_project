@@ -413,6 +413,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const endDetails = document.getElementById("end-details");
   const endBackLevels = document.getElementById("end-back-levels");
   const endRetry = document.getElementById("end-retry");
+  const hudExitButton = document.getElementById("hud-exit");
 
   const rect = canvas.getBoundingClientRect();
   const scale = 0.8;
@@ -512,6 +513,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     onEnd
   );
   game.start();
+
+  if (hudExitButton) {
+    hudExitButton.addEventListener("click", () => {
+      game.isRunning = false;
+      game.isGameOver = true;
+      window.location.href = "../levels/levels.html";
+    });
+  }
 
   endBackLevels.addEventListener("click", () => {
     window.location.href = "../levels/levels.html";
