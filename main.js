@@ -102,6 +102,25 @@ function createDefaultGameDataIfMissing() {
       maxAsteroids: 9,
       goldReward: 500,
     },
+    {
+      id: 4,
+      duration: 60,
+      spawnMinInterval: 0.3,
+      spawnMaxInterval: 0.9,
+      minAsteroids: 6,
+      maxAsteroids: 9,
+      goldReward: 600,
+    },
+    {
+      id: 5,
+      duration: 60,
+      spawnMinInterval: 0.3,
+      spawnMaxInterval: 0.7,
+      minAsteroids: 6,
+      maxAsteroids: 9,
+      goldReward: 1000,
+      boss: true,
+    },
   ];
 
   const defaultShips = [

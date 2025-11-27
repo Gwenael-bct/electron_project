@@ -2,6 +2,7 @@ const { loadGameData, savePlayer } = require("../api");
 const { Player } = require("./player");
 const { Bullet } = require("./bullet");
 const { Asteroid } = require("./asteroid");
+const { Boss } = require("./boss");
 const { loadSprites } = require("./sprites");
 
 class Game {
@@ -25,6 +26,10 @@ class Game {
 
     this.bullets = [];
     this.asteroids = [];
+    this.hasBoss = Boolean(levelData.boss);
+    this.boss = this.hasBoss
+      ? new Boss(levelData, canvas.width, canvas.height, this.sprites.asteroidSprite)
+      : null;
 
     // Nouveau système : temps
     this.timeElapsed = 0;
@@ -91,11 +96,23 @@ class Game {
     this.hudLevelEl.textContent = `Niveau ${this.level.id}`;
     this.hudLifeEl.textContent = `PV: ${this.player.life}`;
 
-    const remainingTime = Math.max(0, Math.ceil(this.duration - this.timeElapsed));
-    this.hudAsteroidsEl.textContent = `Temps restant: ${remainingTime}s`;
+    if (this.boss && this.boss.isAlive) {
+      const hpPercent = Math.max(
+        0,
+        Math.round((this.boss.hp / this.boss.maxHp) * 100)
+      );
+      this.hudAsteroidsEl.textContent = `Boss: ${hpPercent}%`;
+    } else {
+      const remainingTime = Math.max(
+        0,
+        Math.ceil(this.duration - this.timeElapsed)
+      );
+      this.hudAsteroidsEl.textContent = `Temps restant: ${remainingTime}s`;
+    }
   }
 
   spawnAsteroidBatch() {
+    if (this.boss && this.boss.isAlive) return;
     // Nombre aléatoire d'astéroïdes à spawn
     const count = Math.floor(
       this.minAsteroids + Math.random() * (this.maxAsteroids - this.minAsteroids + 1)
@@ -192,6 +209,35 @@ class Game {
     for (const bullet of this.bullets) {
       if (!bullet.isAlive) continue;
 
+      let bulletConsumed = false;
+
+      if (this.boss && this.boss.isAlive) {
+        const dx = bullet.x - this.boss.x;
+        const dy = bullet.y - this.boss.y;
+        const distSq = dx * dx + dy * dy;
+        const radii = this.boss.radius + bullet.radius;
+
+        if (distSq < radii * radii) {
+          bullet.isAlive = false;
+          const retaliation = this.boss.takeDamage(
+            this.player.attack,
+            this.sprites.asteroidSprite
+          );
+          retaliation.forEach((minion) => this.asteroids.push(minion));
+          this.hudDirty = true;
+
+          if (!this.boss.isAlive) {
+            this.player.gold += this.level.goldReward || this.level.id * 150;
+            this.endGame(true);
+            return;
+          }
+
+          bulletConsumed = true;
+        }
+      }
+
+      if (bulletConsumed) continue;
+
       for (const asteroid of this.asteroids) {
         if (!asteroid.isAlive) continue;
 
@@ -272,12 +318,20 @@ class Game {
       Math.min(this.canvas.width - this.player.width, this.player.x)
     );
 
-    // spawn d'astéroïdes
-    this.spawnTimer += dt;
-    if (this.spawnTimer >= this.nextSpawnIn) {
-      this.spawnAsteroidBatch();
-      this.spawnTimer = 0;
-      this.nextSpawnIn = this.randomSpawnInterval();
+    if (this.boss && this.boss.isAlive) {
+      this.boss.update(dt);
+      if (this.boss.y - this.boss.radius > this.canvas.height) {
+        this.endGame(false);
+        return;
+      }
+    } else {
+      // spawn d'astéroïdes
+      this.spawnTimer += dt;
+      if (this.spawnTimer >= this.nextSpawnIn) {
+        this.spawnAsteroidBatch();
+        this.spawnTimer = 0;
+        this.nextSpawnIn = this.randomSpawnInterval();
+      }
     }
 
     // mise à jour astéroïdes (trajectoires diagonales / linéaires)
@@ -297,10 +351,12 @@ class Game {
     this.handleCollisions();
     if (this.isGameOver) return;
 
-    // condition de victoire : temps écoulé
-    this.timeElapsed += dt;
-    if (this.timeElapsed >= this.level.duration) {
-      this.endGame(true);
+    if (!this.boss) {
+      // condition de victoire : temps écoulé
+      this.timeElapsed += dt;
+      if (this.timeElapsed >= this.level.duration) {
+        this.endGame(true);
+      }
     }
 
     // HUD lazy
@@ -316,6 +372,9 @@ class Game {
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.player.draw(ctx);
+    if (this.boss && this.boss.isAlive) {
+      this.boss.draw(ctx);
+    }
     this.bullets.forEach((b) => b.draw(ctx));
     this.asteroids.forEach((a) => a.draw(ctx));
   }
