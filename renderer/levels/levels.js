@@ -69,14 +69,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   const effectiveAttack = player.attack + (currentShip ? currentShip.attack : 0);
   const effectiveSpeed =
     player.attackSpeed + (currentShip ? currentShip.fireRate : 0);
+  const effectiveMoveSpeed = player.moveSpeed || 350;
 
   const playerSummary = document.getElementById("player-summary");
   const levelsContainer = document.getElementById("levels-container");
   const backButton = document.getElementById("back-to-home");
 
   playerSummary.textContent = `${player.userName} – Niveau joueur : ${player.level
-    } | Attaque : ${effectiveAttack} | Vitesse d'attaque : ${effectiveSpeed} | Vie : ${player.life
-    } | Gold : ${player.gold}`;
+    } | Attaque : ${effectiveAttack} | Vitesse d'attaque : ${effectiveSpeed.toFixed(1)} | Vie : ${player.life
+    } | Vitesse : ${effectiveMoveSpeed} | Gold : ${player.gold}`;
 
   levelsContainer.innerHTML = "";
 

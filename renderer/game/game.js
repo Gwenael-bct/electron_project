@@ -122,15 +122,67 @@ class Game {
     this.hudDirty = true;
   }
 
+  getMissilePattern(patternId) {
+    // Configuration des patterns
+    // velocityY = -400 (base speed)
+    const baseSpeed = -400;
+
+    switch (patternId) {
+      case 2: // Double Shot
+        return [
+          { offsetX: -15, velocityX: 0, velocityY: baseSpeed },
+          { offsetX: 15, velocityX: 0, velocityY: baseSpeed }
+        ];
+      case 3: // Triple Shot
+        return [
+          { offsetX: -20, velocityX: 0, velocityY: baseSpeed },
+          { offsetX: 0, velocityX: 0, velocityY: baseSpeed },
+          { offsetX: 20, velocityX: 0, velocityY: baseSpeed }
+        ];
+      case 4: // Side Shot
+        return [
+          { offsetX: 0, velocityX: 0, velocityY: baseSpeed },
+          { offsetX: -20, velocityX: -150, velocityY: baseSpeed * 0.9 },
+          { offsetX: 20, velocityX: 150, velocityY: baseSpeed * 0.9 }
+        ];
+      case 5: // Spread Shot
+        return [
+          { offsetX: 0, velocityX: 0, velocityY: baseSpeed },
+          { offsetX: -10, velocityX: -100, velocityY: baseSpeed * 0.95 },
+          { offsetX: 10, velocityX: 100, velocityY: baseSpeed * 0.95 },
+          { offsetX: -20, velocityX: -200, velocityY: baseSpeed * 0.9 },
+          { offsetX: 20, velocityX: 200, velocityY: baseSpeed * 0.9 }
+        ];
+      case 1: // Default Single
+      default:
+        return [
+          { offsetX: 0, velocityX: 0, velocityY: baseSpeed }
+        ];
+    }
+  }
+
   shoot(dt) {
     const rate = Math.max(this.player.attackSpeed, 0.1);
     const delay = 1 / rate;
 
     this.shootCooldown -= dt;
     if (this.shootCooldown <= 0) {
-      const bulletX = this.player.x + this.player.width / 2;
-      const bulletY = this.player.y;
-      this.bullets.push(new Bullet(bulletX, bulletY));
+      const centerX = this.player.x + this.player.width / 2;
+      const centerY = this.player.y;
+
+      // Récupérer le pattern actuel (1 par défaut)
+      const patternId = this.player.currentMissilePattern || 1;
+      const pattern = this.getMissilePattern(patternId);
+
+      pattern.forEach(config => {
+        this.bullets.push(new Bullet(
+          centerX + config.offsetX,
+          centerY,
+          config.velocityX,
+          config.velocityY
+        ));
+      });
+
       this.shootCooldown = delay;
     }
   }
@@ -343,6 +395,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     attackSpeed:
       gameData.player.attackSpeed + (currentShip ? currentShip.fireRate : 0),
     life: baseLifeFromJson,
+    moveSpeed: gameData.player.moveSpeed || 350,
   };
 
   const onEnd = async (victory, player, currentLevel) => {
@@ -357,9 +410,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         attack: gameData.player.attack,
         attackSpeed: gameData.player.attackSpeed,
         life: baseLifeFromJson, // PV max conservés
+        moveSpeed: gameData.player.moveSpeed || 350,
         gold: player.gold + rewardGold,
         currentShipId: player.currentShipId,
         unlockedShips: player.unlockedShips,
+        // Préserver les compteurs d'améliorations
+        healthUpgrades: gameData.player.healthUpgrades || 0,
+        attackUpgrades: gameData.player.attackUpgrades || 0,
+        attackSpeedUpgrades: gameData.player.attackSpeedUpgrades || 0,
+        moveSpeedUpgrades: gameData.player.moveSpeedUpgrades || 0,
+        // Préserver les patterns de missiles
+        missilePatterns: gameData.player.missilePatterns || [1],
+        currentMissilePattern: gameData.player.currentMissilePattern || 1,
       };
 
       await savePlayer(updatedPlayer);
@@ -373,6 +435,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const updatedPlayer = {
         ...gameData.player,
         life: baseLifeFromJson,
+        // S'assurer que moveSpeed est préservé
+        moveSpeed: gameData.player.moveSpeed || 350,
       };
       await savePlayer(updatedPlayer);
     }

@@ -1,16 +1,20 @@
 class Bullet {
-  constructor(x, y) {
+  constructor(x, y, velocityX = 0, velocityY = -400) {
     this.x = x;
     this.y = y;
     this.radius = 3;
-    this.speed = 400;
+    this.velocityX = velocityX;
+    this.velocityY = velocityY;
     this.damage = 1;
     this.isAlive = true;
   }
 
   update(dt) {
-    this.y -= this.speed * dt;
-    if (this.y < -10) {
+    this.x += this.velocityX * dt;
+    this.y += this.velocityY * dt;
+
+    // Despawn si hors écran (marge de 50px)
+    if (this.y < -50 || this.y > 2000 || this.x < -50 || this.x > 2000) {
       this.isAlive = false;
     }
   }

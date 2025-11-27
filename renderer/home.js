@@ -41,10 +41,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       level: 1,
       attack: 1,
       attackSpeed: 1,
+      moveSpeed: 350,
       life: 3,
       gold: 0,
       currentShipId: 1,
       unlockedShips: [1],
+      // Stat upgrades tracking
+      healthUpgrades: 0,
+      attackUpgrades: 0,
+      attackSpeedUpgrades: 0,
+      moveSpeedUpgrades: 0,
+      // Missile patterns
+      missilePatterns: [1], // 1 = default single shot
+      currentMissilePattern: 1,
     };
 
     await savePlayer(newPlayer);

@@ -4,7 +4,7 @@ class Player {
     this.height = 60;
     this.x = canvasWidth / 2 - this.width / 2;
     this.y = canvasHeight - this.height - 10;
-    this.speed = 350;
+    this.speed = stats.moveSpeed || 350;
 
     this.maxLife = stats.life;
     this.life = stats.life;
@@ -16,6 +16,8 @@ class Player {
     this.userName = stats.userName;
     this.currentShipId = stats.currentShipId;
     this.unlockedShips = stats.unlockedShips;
+    this.currentMissilePattern = stats.currentMissilePattern;
+    this.missilePatterns = stats.missilePatterns;
 
     this.sprite = sprite || null;
   }

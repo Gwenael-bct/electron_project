@@ -154,6 +154,39 @@ function createDefaultGameDataIfMissing() {
     changed = true;
   }
 
+  // Migration : ajouter les champs d'amélioration si manquants
+  if (existing.player) {
+    if (existing.player.healthUpgrades === undefined) {
+      existing.player.healthUpgrades = 0;
+      changed = true;
+    }
+    if (existing.player.attackUpgrades === undefined) {
+      existing.player.attackUpgrades = 0;
+      changed = true;
+    }
+    if (existing.player.attackSpeedUpgrades === undefined) {
+      existing.player.attackSpeedUpgrades = 0;
+      changed = true;
+    }
+    if (existing.player.moveSpeedUpgrades === undefined) {
+      existing.player.moveSpeedUpgrades = 0;
+      changed = true;
+    }
+    if (existing.player.moveSpeed === undefined) {
+      existing.player.moveSpeed = 350;
+      changed = true;
+    }
+    // Migration : patterns de missiles
+    if (existing.player.missilePatterns === undefined) {
+      existing.player.missilePatterns = [1];
+      changed = true;
+    }
+    if (existing.player.currentMissilePattern === undefined) {
+      existing.player.currentMissilePattern = 1;
+      changed = true;
+    }
+  }
+
   if (changed) {
     saveGameData(existing);
   }
