@@ -1,28 +1,53 @@
 {
   "name": "electron_project",
   "version": "1.0.0",
-  "description": "",
+  "description": "Space Shooter",
   "license": "ISC",
-  "author": "",
+  "author": "Moi-même",
   "type": "commonjs",
   "main": "main.js",
+  "build": {
+    "appId": "com.tonstudio.spaceshooter",
+    "directories": {
+      "buildResources": "assets",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "renderer/**/*",
+      "playerData.json",
+      "assets/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "zip"
+      ],
+      "icon": "assets/app-icon.ico"
+    }
+  },
   "scripts": {
     "build:css": "tailwindcss -i ./renderer/input.css -o ./renderer/output.css --watch",
     "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps",
     "lint:js": "eslint \"**/*.js\"",
     "lint:html": "htmlhint \"**/*.html\"",
     "lint": "npm run lint:js && npm run lint:html"
   },
   "dependencies": {
-    "electron": "^39.2.3",
     "htmlhint": "^1.7.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "autoprefixer": "^10.4.22",
+    "electron": "^39.2.3",
+    "electron-builder": "^26.0.12",
     "eslint": "^9.39.1",
     "globals": "^16.5.0",
+    "jest": "^30.2.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.18"
   }
