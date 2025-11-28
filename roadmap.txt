@@ -1,0 +1,43 @@
+Feuille de route – Soutenance Space Shooter (10 minutes)
+=====================================================
+
+1. Introduction (1 min)
+   - Présente-toi et replace le projet : « Space Shooter » est un jeu desktop réalisé en Electron dans le cadre de M2.
+   - Objectif : proposer une expérience arcade moderne avec personnalisation, boutique et progression.
+
+2. Contexte et cas d’usage (1 min)
+   - Public visé : joueurs casuals/fans de rétro-shooters, démonstration technique d’un front moderne en desktop.
+   - Bénéfices : accès hors navigateur, persistance locale du profil, possibilité de monétisation via boutique virtuelle.
+
+3. Stack et outils (2 min)
+   - Electron 39 pour l’enrobage desktop + IPC (main process / renderer).
+   - Front : HTML/Tailwind CSS, assets custom (sprites, background).
+   - JS côté renderer : logique de gameplay (classes Player, Asteroid, Boss, Game).
+   - Outils : Tailwind CLI, ESLint/HTMLHint, electron-builder pour packaging (NSIS + ZIP).
+
+4. Architecture du projet (2 min)
+   - `main.js` : point d’entrée, création de la fenêtre, gestion du preload et des IPC pour charger/sauver les données.
+   - Dossier `renderer/` :
+     • `index.html`, `levels.html`, `store.html`, `game.html` – chaque écran avec sa logique JS (home.js, levels.js, store.js, game.js).  
+     • `game/` : cœur du gameplay (player, bullet, asteroid, boss, sprites, game loop).  
+   - `playerData.json` : données persistées (profil, niveaux, vaisseaux).  
+   - `assets/` : background, sprites, icône packaging.
+
+5. Fonctionnalités clés (2 min)
+   - Progression : niveaux avec paramètres (durée, spawn), possibilité de marquer un niveau “boss”.  
+   - Gestion du joueur : stats de base + bonus vaisseaux/patterns, boutique pour upgrades.  
+   - Gameplay : déplacement latéral, patterns de tir configurables, collisions, HUD dynamique, pause/retour menu.  
+   - Boss fights : boss géant lent, minions rebondissants, récompenses spécifiques.  
+   - Packaging : build desktop (`dist/electron_project Setup 1.0.0.exe`).
+
+6. Démonstration rapide (1-2 min)
+   - Lancer l’app, montrer l’accueil → sélection de niveau → partie (spawn astéroïdes, tir, boss).  
+   - Montrer la boutique/upgrade pour contextualiser la persistance.
+
+7. Bilan et perspectives (1-2 min)
+   - Ce qui fonctionne : DA harmonisée, HUD complet, système de bosses, packager opérationnel.  
+   - Axes d’amélioration : nouveaux niveaux/IA, sauvegarde cloud, modes multi, analytics.
+
+8. Questions (temps restant)
+   - Prévoir réponses sur choix d’Electron, gestion des perfs, sécurité, roadmap technique.
+

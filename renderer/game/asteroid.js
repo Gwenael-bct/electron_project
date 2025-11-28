@@ -1,24 +1,32 @@
 class Asteroid {
-  constructor(x, y, levelId, sprite) {
+  constructor(x, y, levelId, sprite, options = {}) {
     this.x = x;
     this.y = y;
 
-    // taille random
-    this.radius = 16 + Math.random() * 24;
+    // taille configurable (boss minions plus gros ou plus petits)
+    this.radius = options.radius ?? 16 + Math.random() * 24;
 
     // vitesse globale
-    const baseSpeed = 100 + Math.random() * 100;
+    const baseSpeed = options.baseSpeed ?? 100 + Math.random() * 100;
 
     // angle autour de "vers le bas" (PI/2), ±45°
     const angleSpread = Math.PI / 10;
-    const angle = Math.PI / 2 + (Math.random() - 0.5) * 2 * angleSpread;
+    const angle =
+      options.angle ??
+      (Math.PI / 2 + (Math.random() - 0.5) * 2 * angleSpread);
 
-    this.vx = Math.cos(angle) * baseSpeed;
-    this.vy = Math.sin(angle) * baseSpeed;
+    if (options.velocity) {
+      this.vx = options.velocity.x;
+      this.vy = options.velocity.y;
+    } else {
+      this.vx = Math.cos(angle) * baseSpeed;
+      this.vy = Math.sin(angle) * baseSpeed;
+    }
 
-    this.maxHp = levelId * 1;
+    this.maxHp = options.hp ?? levelId * 1;
     this.hp = this.maxHp;
     this.isAlive = true;
+    this.isBouncy = Boolean(options.bouncy);
 
     this.sprite = sprite || null;
   }
@@ -26,6 +34,16 @@ class Asteroid {
   update(dt, canvasWidth, canvasHeight) {
     this.x += this.vx * dt;
     this.y += this.vy * dt;
+
+    if (this.isBouncy) {
+      if (this.x - this.radius < 0 && this.vx < 0) {
+        this.x = this.radius;
+        this.vx = -this.vx;
+      } else if (this.x + this.radius > canvasWidth && this.vx > 0) {
+        this.x = canvasWidth - this.radius;
+        this.vx = -this.vx;
+      }
+    }
 
     // sorti de l'écran => on supprime
     if (
